@@ -18,6 +18,6 @@ public class Food {
     @Column(name = "price", nullable = false)
     private Double price;
     @ManyToOne(fetch = FetchType.LAZY)  //LAZY, щоб не завантажувати категорію автоматично
-    @JoinColumn(name = "category_id", nullable = false)
+    @JoinColumn(name = "category_id")
     private Category category;
 }

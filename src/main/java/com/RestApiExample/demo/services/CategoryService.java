@@ -1,5 +1,6 @@
 package com.RestApiExample.demo.services;
 
+import com.RestApiExample.demo.dto.CategoryDto;
 import com.RestApiExample.demo.models.Category;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,20 +15,26 @@ public class CategoryService {
     public CategoryService(CategoryRepository categoryRepository){
         this.categoryRepository=categoryRepository;
     }
-    public List<Category> findAllCategories(){
-        return  categoryRepository.findAll();
+    private CategoryDto convertToCategoryDto(Category category){
+        return new CategoryDto(category);
     }
-    public Category findById(Long id){
-        return categoryRepository.findById(id).orElseThrow(()->new RuntimeException("Category don`t exist"));
+    public List<CategoryDto> findAllCategories(){
+        return  categoryRepository.findAll().stream()
+                .map(this::convertToCategoryDto)
+                .toList();
     }
-    public Category createCategory(Category category){
-        return categoryRepository.save(category);
+    public CategoryDto findById(Long id){
+        Category category = categoryRepository.findById(id).orElseThrow(()->new RuntimeException("Category don`t exist"));
+        return convertToCategoryDto(category);
     }
-    public Category updateCategory(Category updatedCategory, Long id){
-        Category existingCategory = findById(id);
+    public CategoryDto createCategory(Category category){
+        return convertToCategoryDto(categoryRepository.save(category));
+    }
+    public CategoryDto updateCategory(Category updatedCategory, Long id){
+        Category existingCategory = categoryRepository.findById(id).orElseThrow(()-> new RuntimeException("Category don`t exist"));
         existingCategory.setName(updatedCategory.getName());
         existingCategory.setDescription(updatedCategory.getDescription());
-        return categoryRepository.save(existingCategory);
+        return convertToCategoryDto(categoryRepository.save(existingCategory));
     }
     public void deleteById(Long id){
         categoryRepository.deleteById(id);

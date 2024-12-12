@@ -1,5 +1,6 @@
 package com.RestApiExample.demo.controllers;
 
+import com.RestApiExample.demo.dto.CategoryDto;
 import com.RestApiExample.demo.models.Category;
 import com.RestApiExample.demo.services.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,23 +19,23 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
     @GetMapping
-    public ResponseEntity<List<Category>> findAllCategories(){
-        List<Category> categories = categoryService.findAllCategories();
+    public ResponseEntity<List<CategoryDto>> findAllCategories(){
+        List<CategoryDto> categories = categoryService.findAllCategories();
         return new ResponseEntity<>(categories, HttpStatus.OK);
     }
     @GetMapping("/{id}")
-    public ResponseEntity<Category> findById(@PathVariable Long id){
-        Category category = categoryService.findById(id);
+    public ResponseEntity<CategoryDto> findById(@PathVariable Long id){
+        CategoryDto category = categoryService.findById(id);
         return new ResponseEntity<>(category,HttpStatus.OK);
     }
     @PostMapping
-    public ResponseEntity<Category> createCategory(@RequestBody Category category){
-        Category createdCategory = categoryService.createCategory(category);
+    public ResponseEntity<CategoryDto> createCategory(@RequestBody Category category){
+        CategoryDto createdCategory = categoryService.createCategory(category);
         return new ResponseEntity<>(createdCategory,HttpStatus.CREATED);
     }
     @PutMapping("/{id}")
-    public ResponseEntity<Category> updateCategory(@PathVariable Long id, @RequestBody Category category){
-        Category updatedCategory = categoryService.updateCategory(category,id);
+    public ResponseEntity<CategoryDto> updateCategory(@PathVariable Long id, @RequestBody Category category){
+        CategoryDto updatedCategory = categoryService.updateCategory(category,id);
         return new ResponseEntity<>(updatedCategory,HttpStatus.OK);
     }
     @DeleteMapping("/{id}")
