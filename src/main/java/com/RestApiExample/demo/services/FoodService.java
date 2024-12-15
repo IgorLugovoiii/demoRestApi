@@ -50,7 +50,7 @@ public class FoodService {
             return convertToFoodDto(food);
         } catch (Exception e){
             logger.error("Failed to find food with id {} due to {}", id, e.getMessage(),e);
-            throw new RuntimeException("Unable to find category by id", e);
+            throw new RuntimeException("Unable to find food by id", e);
         }
     }
     public FoodDto createFood(Food food){
@@ -87,30 +87,54 @@ public class FoodService {
             foodRepository.deleteById(id);
             logger.debug("Food with id {} successfully deleted", id);
         } catch (EntityNotFoundException entityNotFoundException){
-            logger.warn("Food with id {} not found for deletion", id);
+            logger.warn("Food with id {} not found for deletion  due to {}", id, entityNotFoundException.getMessage(),entityNotFoundException);
             throw entityNotFoundException;
         } catch (Exception e){
             logger.error("Failed to delete food with id {} due to {}", id, e.getMessage(),e);
             throw new RuntimeException("Failed to delete food, please check the input data", e);
         }
     }
-    public List<FoodDto> findFoodByCategory(Category category){
-        return foodRepository.findAll().stream()
-                .filter(food -> food.getCategory().equals(category))
-                .map(this::convertToFoodDto)
-                .toList();
+    public List<FoodDto> findFoodByCategory(String categoryName){
+        try {
+            logger.debug("Attempting to find food by category {}", categoryName);
+            List<FoodDto> foodDtos = foodRepository.findAll().stream()
+                    .filter(food -> food.getCategory().getName().equals(categoryName))
+                    .map(this::convertToFoodDto)
+                    .toList();
+            logger.debug("Food was found");
+            return foodDtos;
+        } catch (Exception e){
+            logger.error("Food with category name {} not found  due to {}", categoryName, e.getMessage(),e);
+            throw new RuntimeException("Failed to find food by category name", e);
+        }
     }
     public List<FoodDto> findByPriceLessThan(Double price){
-        return foodRepository.findAll().stream()
-                .filter(food -> food.getPrice() < price)
-                .map(this::convertToFoodDto)
-                .toList();
+        try {
+            logger.debug("Attempting to find food by price less than price: {}", price);
+            List<FoodDto> foodDtos = foodRepository.findAll().stream()
+                    .filter(food -> food.getPrice() < price)
+                    .map(this::convertToFoodDto)
+                    .toList();
+            logger.debug("Food was found by price less than price: {}", price);
+            return foodDtos;
+        } catch (Exception e){
+            logger.error("Food less then {} was not found",price);
+            throw new RuntimeException("Failed to find food",e);
+        }
     }
     public List<FoodDto> findByPriceMoreThan(Double price){
-        return foodRepository.findAll().stream()
+        try {
+            logger.debug("Attempting to find food by price more than price: {}", price);
+            List<FoodDto> foodDtos = foodRepository.findAll().stream()
                 .filter(food -> food.getPrice() > price)
                 .map(this::convertToFoodDto)
                 .toList();
+            logger.debug("Food was found by price more than price: {}", price);
+        return foodDtos;
+        } catch (Exception e){
+            logger.error("Food more then {} was not found",price);
+            throw new RuntimeException("Failed to find food",e);
+        }
     }
     public List<FoodDto> sortFoodByIncreasingPrice(){
         return foodRepository.findAll().stream()

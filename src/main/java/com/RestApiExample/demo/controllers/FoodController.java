@@ -1,6 +1,7 @@
 package com.RestApiExample.demo.controllers;
 
 import com.RestApiExample.demo.dto.FoodDto;
+import com.RestApiExample.demo.models.Category;
 import com.RestApiExample.demo.services.FoodService;
 import com.RestApiExample.demo.models.Food;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,4 +64,9 @@ public class FoodController {
         List<FoodDto> foodList = foodService.sortFoodByDecreasingPrice();
         return new ResponseEntity<>(foodList, HttpStatus.OK);
     }
+//    @GetMapping("findByCategory/{categoryName}")
+//    public ResponseEntity<List<FoodDto>> findFoodByCategory(@PathVariable String categoryName){
+//        List<FoodDto> foodDtoList = foodService.findFoodByCategory(categoryName);
+//        return new ResponseEntity<>(foodDtoList, HttpStatus.OK);
+//    }
 }
