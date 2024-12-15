@@ -64,9 +64,9 @@ public class FoodController {
         List<FoodDto> foodList = foodService.sortFoodByDecreasingPrice();
         return new ResponseEntity<>(foodList, HttpStatus.OK);
     }
-//    @GetMapping("findByCategory/{categoryName}")
-//    public ResponseEntity<List<FoodDto>> findFoodByCategory(@PathVariable String categoryName){
-//        List<FoodDto> foodDtoList = foodService.findFoodByCategory(categoryName);
-//        return new ResponseEntity<>(foodDtoList, HttpStatus.OK);
-//    }
+    @GetMapping("findByCategory/{categoryName}")
+    public ResponseEntity<List<FoodDto>> findFoodByCategory(@PathVariable String categoryName){
+        List<FoodDto> foodDtoList = foodService.findFoodByCategory(categoryName);
+        return new ResponseEntity<>(foodDtoList, HttpStatus.OK);
+    }
 }
