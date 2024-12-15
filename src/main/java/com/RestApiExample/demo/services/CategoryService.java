@@ -81,7 +81,7 @@ public class CategoryService {
             logger.debug("Category with id {} successfully deleted", id);
         } catch (EntityNotFoundException e) {
             logger.warn("Category with id {} not found for deletion", id);
-            throw e; // Повторно кидаємо виключення, якщо це необхідно
+            throw e;
         } catch (Exception e) {
             logger.error("Failed to delete category with id {} due to {}", id, e.getMessage(), e);
             throw new RuntimeException("Failed to delete category, please check the input data", e);
