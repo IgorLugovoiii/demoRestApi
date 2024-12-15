@@ -3,6 +3,9 @@ package com.RestApiExample.demo.services;
 import com.RestApiExample.demo.dto.FoodDto;
 import com.RestApiExample.demo.models.Category;
 import com.RestApiExample.demo.models.Food;
+import jakarta.persistence.EntityNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.RestApiExample.demo.repositories.FoodRepository;
@@ -13,6 +16,7 @@ import java.util.List;
 @Service
 public class FoodService {
     private final FoodRepository foodRepository;
+    private final Logger logger = LoggerFactory.getLogger(FoodService.class);
     @Autowired
     public FoodService(FoodRepository foodRepository){
         this.foodRepository = foodRepository;
@@ -21,30 +25,74 @@ public class FoodService {
         return new FoodDto(food);
     }
     public List<FoodDto> getAllFood(){
-
-        return foodRepository.findAll()
+        try{
+            logger.debug("Attempting to find all food");
+        List<FoodDto> foodDtos = foodRepository.findAll()
                 .stream()
                 .map(this::convertToFoodDto) //food->convertToFoodDto(food) кожен елемент food перетворюємо в FoodDto
                 .toList();
+        logger.debug("Found {} categories", foodDtos.size());
+        return foodDtos;
+        } catch (Exception e){
+            logger.error("Failed to find all food due to {}",e.getMessage(),e);
+            throw new RuntimeException("Unable to find any food", e);
+        }
+
     }
     public FoodDto findById(Long id){
-        Food food = foodRepository.findById(id).orElseThrow(() -> new RuntimeException("Food don`t exist"));
-        return convertToFoodDto(food);
+        logger.debug("Looking for food with id: {}", id);
+        try {
+            Food food = foodRepository.findById(id)
+                    .orElseThrow(() ->{
+                        logger.warn("Food with id: {} not found", id);
+                        return new EntityNotFoundException("Food don`t exist");
+                    });
+            return convertToFoodDto(food);
+        } catch (Exception e){
+            logger.error("Failed to find food with id {} due to {}", id, e.getMessage(),e);
+            throw new RuntimeException("Unable to find category by id", e);
+        }
     }
     public FoodDto createFood(Food food){
-        return convertToFoodDto(foodRepository.save(food));
+        try {
+            logger.debug("Attempting to create food: {}", food);
+            return convertToFoodDto(foodRepository.save(food));
+        } catch (Exception e){
+            logger.error("Failed to create food due to {}", e.getMessage(), e);
+            throw new RuntimeException("Unable to create food, please check the input data", e);
+        }
     }
     public FoodDto updateFood(Long id, Food updatedFood){
-        Food existingFood = foodRepository.findById(id).orElseThrow(() -> new RuntimeException("Food don`t exist"));
-        existingFood.setName(updatedFood.getName());
-        existingFood.setDescription(updatedFood.getDescription());
-        existingFood.setPrice(updatedFood.getPrice());
-        existingFood.setCategory(updatedFood.getCategory());
+        try {
+            logger.debug("Attempting to update food with id: {}", id);
+            Food existingFood = foodRepository.findById(id)
+                    .orElseThrow(() -> {
+                        logger.warn("Food with id {} not found for update",id);
+                        return new EntityNotFoundException("Food don`t exist");
+                    });
+            existingFood.setName(updatedFood.getName());
+            existingFood.setDescription(updatedFood.getDescription());
+            existingFood.setPrice(updatedFood.getPrice());
+            existingFood.setCategory(updatedFood.getCategory());
 
-        return convertToFoodDto(foodRepository.save(existingFood));
+            return convertToFoodDto(foodRepository.save(existingFood));
+        } catch (Exception e){
+            logger.error("Failed to update food with id {} due to {}", id, e.getMessage(), e);
+            throw new RuntimeException("Unable to update food, please check the input data",e);
+        }
     }
     public void deleteById(Long id){
-        foodRepository.deleteById(id);
+        try {
+            logger.debug("Attempting to delete food with id: {}", id);
+            foodRepository.deleteById(id);
+            logger.debug("Food with id {} successfully deleted", id);
+        } catch (EntityNotFoundException entityNotFoundException){
+            logger.warn("Food with id {} not found for deletion", id);
+            throw entityNotFoundException;
+        } catch (Exception e){
+            logger.error("Failed to delete food with id {} due to {}", id, e.getMessage(),e);
+            throw new RuntimeException("Failed to delete food, please check the input data", e);
+        }
     }
     public List<FoodDto> findFoodByCategory(Category category){
         return foodRepository.findAll().stream()

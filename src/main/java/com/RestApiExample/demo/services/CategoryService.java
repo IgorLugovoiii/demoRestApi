@@ -25,11 +25,11 @@ public class CategoryService {
     public List<CategoryDto> findAllCategories(){
         try {
             logger.debug("Attempting to find all categories");
-            List<CategoryDto> categories = categoryRepository.findAll().stream()
+            List<CategoryDto> categoryDtos = categoryRepository.findAll().stream()
                     .map(this::convertToCategoryDto)
                     .toList();
-            logger.debug("Found {} categories", categories.size());
-            return categories;
+            logger.debug("Found {} categories", categoryDtos.size());
+            return categoryDtos;
         }catch (Exception e){
             logger.error("Failed to find categories due to {}", e.getMessage(), e);
             throw new RuntimeException("Unable to find any category", e);
