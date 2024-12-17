@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  # Сервіс для PostgreSQL
+  postgres:
+    image: postgres:17-alpine3.21
+    container_name: postgres-db
+    environment:
+      POSTGRES_DB: demoRestApi       # Назва бази даних
+      POSTGRES_USER: igor           # Ім'я користувача
+      POSTGRES_PASSWORD: password   # Пароль користувача
+    ports:
+      - "5432:5432"                 # Мапування порту
+    volumes:
+      - postgres-data:/var/lib/postgresql/data  # Збереження даних, Якщо контейнер з PostgreSQL буде видалено або перезапущено, всі дані в ньому втрачаються, якщо вони не збережені у volume
+
+  spring-app:
+    build: .
+    container_name: spring-app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres                    # Залежність від PostgreSQL
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/demoRestApi
+      SPRING_DATASOURCE_USERNAME: igor
+      SPRING_DATASOURCE_PASSWORD: password
+volumes:
+  postgres-data:                    # Оголошення тому для PostgreSQL

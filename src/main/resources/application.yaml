@@ -6,7 +6,7 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: update # create-drop / validate / update
+      ddl-auto: update
     show-sql: true
 logging:
   level:
@@ -16,4 +16,4 @@ logging:
   file:
     name: ./logs/app.log
   pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"  # Формат виведення логів у консоль
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
