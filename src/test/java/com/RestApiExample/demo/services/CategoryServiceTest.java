@@ -84,10 +84,9 @@ public class CategoryServiceTest {
         Mockito.when(categoryRepository.findById(1L)).thenReturn(Optional.of(oldCategory));
         Mockito.when(categoryRepository.save(oldCategory)).thenReturn(oldCategory);
 
-        CategoryDto result = categoryService.updateCategory(updatedCategory, 1L);
+        categoryService.updateCategory(updatedCategory, 1L);
 
-        Assertions.assertNotNull(result);
-        Assertions.assertEquals("New test name",result.getName());
+        Assertions.assertNotNull(oldCategory);
         Assertions.assertEquals("New test name", oldCategory.getName());
         Mockito.verify(categoryRepository).findById(1L);
         Mockito.verify(categoryRepository).save(oldCategory);
