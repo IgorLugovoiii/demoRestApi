@@ -95,4 +95,82 @@ public class FoodServiceTest {
 
         Mockito.verify(foodRepository, Mockito.times(1)).deleteById(1L);
     }
+
+    @Test
+    void testFindByPriceLessThan(){
+        Food food1 = new Food();
+        Food food2 = new Food();
+
+        food1.setName("Food1");
+        food1.setPrice(15.00);
+        food2.setName("Food2");
+        food2.setPrice(25.00);
+
+        Mockito.when(foodRepository.findAll()).thenReturn(List.of(food1,food2));
+
+        List<FoodDto> foodDtoList = foodService.findByPriceLessThan(20.00);
+
+        Assertions.assertEquals("Food1",foodDtoList.getFirst().getName());
+        Assertions.assertEquals(1, foodDtoList.size());
+        Mockito.verify(foodRepository, Mockito.times(1)).findAll();
+    }
+
+    @Test
+    void testFindByPriceMoreThan(){
+        Food food1 = new Food();
+        Food food2 = new Food();
+
+        food1.setName("Food1");
+        food1.setPrice(15.00);
+        food2.setName("Food2");
+        food2.setPrice(25.00);
+
+        Mockito.when(foodRepository.findAll()).thenReturn(List.of(food1,food2));
+
+        List<FoodDto> foodDtoList = foodService.findByPriceMoreThan(20.00);
+
+        Assertions.assertEquals(1, foodDtoList.size());
+        Assertions.assertEquals("Food2",foodDtoList.getFirst().getName());
+        Mockito.verify(foodRepository, Mockito.times(1)).findAll();
+    }
+
+    @Test
+    void testSortFoodByIncreasingPrice(){
+        Food food1 = new Food();
+        Food food2 = new Food();
+
+        food1.setName("Food1");
+        food1.setPrice(25.00);
+        food2.setName("Food2");
+        food2.setPrice(15.00);
+
+        Mockito.when(foodRepository.findAll()).thenReturn(List.of(food1,food2));
+
+        List<FoodDto> list = foodService.sortFoodByIncreasingPrice();
+
+        Assertions.assertEquals("Food2", list.getFirst().getName());
+        Assertions.assertEquals("Food1", list.get(1).getName());
+        Assertions.assertEquals(2, list.size());
+        Mockito.verify(foodRepository).findAll();
+    }
+
+    @Test
+    void testSortFoodByDecreasingPrice(){
+        Food food1 = new Food();
+        Food food2 = new Food();
+
+        food1.setName("Food1");
+        food1.setPrice(25.00);
+        food2.setName("Food2");
+        food2.setPrice(15.00);
+
+        Mockito.when(foodRepository.findAll()).thenReturn(List.of(food1,food2));
+
+        List<FoodDto> list = foodService.sortFoodByDecreasingPrice();
+
+        Assertions.assertEquals("Food1", list.getFirst().getName());
+        Assertions.assertEquals("Food2", list.get(1).getName());
+        Assertions.assertEquals(2, list.size());
+        Mockito.verify(foodRepository).findAll();
+    }
 }
