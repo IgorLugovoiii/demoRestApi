@@ -60,6 +60,7 @@ public class FoodControllerIT {
                 .andExpect(jsonPath("$.name").value("Test name"))
                 .andExpect(jsonPath("$.id").value(1L));
     }
+
     @Test
     void testCreateFood() throws Exception{
         Food food = new Food();
