@@ -45,12 +45,14 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
         return httpSecurity.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/food").hasRole("CUSTOMER")
+                        .requestMatchers("/api/auth/login","/api/auth/registration").permitAll()
+                        .requestMatchers("/api/food/**","/api/category/**").hasAnyRole("ADMIN","SELLER","CUSTOMER")
                         .anyRequest().authenticated()
                 )
-                .formLogin(form -> form
-                        .loginPage("/login")
-                        .permitAll())
+                .formLogin(AbstractHttpConfigurer::disable)
+//                .formLogin(form -> form
+//                        .loginPage("/api/auth/login")
+//                        .permitAll())
                 .build();
     }
 }
