@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.RestApiExample.demo.repositories.CategoryRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -22,6 +23,8 @@ public class CategoryService {
     private CategoryDto convertToCategoryDto(Category category){
         return new CategoryDto(category);
     }
+
+    @Transactional(readOnly = true)
     public List<CategoryDto> findAllCategories(){
         try {
             logger.debug("Attempting to find all categories");
@@ -35,6 +38,7 @@ public class CategoryService {
             throw new RuntimeException("Unable to find any category", e);
         }
     }
+    @Transactional(readOnly = true)
     public CategoryDto findById(Long id){
         logger.debug("Looking for category with id: {}", id);
         try{
@@ -49,6 +53,7 @@ public class CategoryService {
             throw new RuntimeException("Unable to find category by id", e);
         }
     }
+    @Transactional
     public CategoryDto createCategory(Category category){
         try{
             logger.debug("Attempting to create category: {}", category);
@@ -58,6 +63,7 @@ public class CategoryService {
             throw new RuntimeException("Unable to create category, please check the input data", e);
         }
     }
+    @Transactional
     public CategoryDto updateCategory(Category updatedCategory, Long id){
         try {
             logger.debug("Updating category with id {}", id);
@@ -74,6 +80,7 @@ public class CategoryService {
             throw new RuntimeException("Unable to update category, please check the input data", e);
         }
     }
+    @Transactional
     public void deleteById(Long id){
         try {
             logger.debug("Attempting to delete category with id {}", id);

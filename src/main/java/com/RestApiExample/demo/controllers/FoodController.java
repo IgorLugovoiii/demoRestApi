@@ -50,8 +50,8 @@ public class FoodController {
         return new ResponseEntity<>(foodList, HttpStatus.OK);
     }
     @GetMapping("/more-than/{price}")
-    public ResponseEntity<List<FoodDto>> findByPriceMoreThan(@PathVariable Double price){
-        List<FoodDto> foodList = foodService.findByPriceMoreThan(price);
+    public ResponseEntity<List<FoodDto>> findByPriceGreaterThan(@PathVariable Double price){
+        List<FoodDto> foodList = foodService.findByPriceGreaterThan(price);
         return new ResponseEntity<>(foodList, HttpStatus.OK);
     }
     @GetMapping("/increasing-price")

@@ -1,7 +1,6 @@
 package com.RestApiExample.demo.services;
 
 import com.RestApiExample.demo.dto.FoodDto;
-import com.RestApiExample.demo.models.Category;
 import com.RestApiExample.demo.models.Food;
 import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
@@ -9,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.RestApiExample.demo.repositories.FoodRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
 import java.util.List;
@@ -24,6 +24,7 @@ public class FoodService {
     private FoodDto convertToFoodDto(Food food){
         return new FoodDto(food);
     }
+    @Transactional(readOnly = true)
     public List<FoodDto> getAllFood(){
         try{
             logger.debug("Attempting to find all food");
@@ -39,6 +40,7 @@ public class FoodService {
         }
 
     }
+    @Transactional(readOnly = true)
     public FoodDto findById(Long id){
         logger.debug("Looking for food with id: {}", id);
         try {
@@ -53,6 +55,7 @@ public class FoodService {
             throw new RuntimeException("Unable to find food by id", e);
         }
     }
+    @Transactional
     public FoodDto createFood(Food food){
         try {
             logger.debug("Attempting to create food: {}", food);
@@ -62,6 +65,7 @@ public class FoodService {
             throw new RuntimeException("Unable to create food, please check the input data", e);
         }
     }
+    @Transactional
     public FoodDto updateFood(Long id, Food updatedFood){
         try {
             logger.debug("Attempting to update food with id: {}", id);
@@ -81,6 +85,7 @@ public class FoodService {
             throw new RuntimeException("Unable to update food, please check the input data",e);
         }
     }
+    @Transactional
     public void deleteById(Long id){
         try {
             logger.debug("Attempting to delete food with id: {}", id);
@@ -108,11 +113,11 @@ public class FoodService {
             throw new RuntimeException("Failed to find food by category name", e);
         }
     }
+    @Transactional(readOnly = true)
     public List<FoodDto> findByPriceLessThan(Double price){
         try {
             logger.debug("Attempting to find food by price less than price: {}", price);
-            List<FoodDto> foodDtos = foodRepository.findAll().stream()
-                    .filter(food -> food.getPrice() < price)
+            List<FoodDto> foodDtos = foodRepository.findByPriceLessThan(price).stream()
                     .map(this::convertToFoodDto)
                     .toList();
             logger.debug("Food was found by price less than price: {}", price);
@@ -122,11 +127,11 @@ public class FoodService {
             throw new RuntimeException("Failed to find food",e);
         }
     }
-    public List<FoodDto> findByPriceMoreThan(Double price){
+    @Transactional(readOnly = true)
+    public List<FoodDto> findByPriceGreaterThan(Double price){
         try {
             logger.debug("Attempting to find food by price more than price: {}", price);
-            List<FoodDto> foodDtos = foodRepository.findAll().stream()
-                .filter(food -> food.getPrice() > price)
+            List<FoodDto> foodDtos = foodRepository.findByPriceGreaterThan(price).stream()
                 .map(this::convertToFoodDto)
                 .toList();
             logger.debug("Food was found by price more than price: {}", price);
@@ -136,15 +141,15 @@ public class FoodService {
             throw new RuntimeException("Failed to find food",e);
         }
     }
+    @Transactional(readOnly = true)
     public List<FoodDto> sortFoodByIncreasingPrice(){
-        return foodRepository.findAll().stream()
-                .sorted(Comparator.comparingDouble(Food::getPrice))
+        return foodRepository.sortFoodByIncreasingPrice().stream()
                 .map(this::convertToFoodDto)
                 .toList();
     }
+    @Transactional(readOnly = true)
     public List<FoodDto> sortFoodByDecreasingPrice(){
-        return foodRepository.findAll().stream()
-                .sorted(Comparator.comparingDouble(Food::getPrice).reversed())
+        return foodRepository.sortFoodByDecreasingPrice().stream()
                 .map(this::convertToFoodDto)
                 .toList();
     }

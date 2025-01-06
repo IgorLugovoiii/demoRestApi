@@ -116,7 +116,7 @@ public class FoodServiceTest {
     }
 
     @Test
-    void testFindByPriceMoreThan(){
+    void testFindByPriceGreaterThan(){
         Food food1 = new Food();
         Food food2 = new Food();
 
@@ -127,7 +127,7 @@ public class FoodServiceTest {
 
         Mockito.when(foodRepository.findAll()).thenReturn(List.of(food1,food2));
 
-        List<FoodDto> foodDtoList = foodService.findByPriceMoreThan(20.00);
+        List<FoodDto> foodDtoList = foodService.findByPriceGreaterThan(20.00);
 
         Assertions.assertEquals(1, foodDtoList.size());
         Assertions.assertEquals("Food2",foodDtoList.getFirst().getName());
