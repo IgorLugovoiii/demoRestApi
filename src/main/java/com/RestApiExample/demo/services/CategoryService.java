@@ -3,8 +3,6 @@ package com.RestApiExample.demo.services;
 import com.RestApiExample.demo.dto.CategoryDto;
 import com.RestApiExample.demo.models.Category;
 import jakarta.persistence.EntityNotFoundException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.RestApiExample.demo.repositories.CategoryRepository;
@@ -15,7 +13,6 @@ import java.util.List;
 @Service
 public class CategoryService {
     private final CategoryRepository categoryRepository;
-    private static final Logger logger = LoggerFactory.getLogger(CategoryService.class);
     @Autowired
     public CategoryService(CategoryRepository categoryRepository){
         this.categoryRepository=categoryRepository;
