@@ -3,6 +3,8 @@ package com.RestApiExample.demo.models;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.Objects;
+
 @Entity
 @Data
 @Table(name = "food")
@@ -20,4 +22,17 @@ public class Food {
     @ManyToOne(fetch = FetchType.LAZY)  //LAZY, щоб не завантажувати категорію автоматично
     @JoinColumn(name = "category_id")
     private Category category;
+
+    @Override
+    public boolean equals(Object o){
+        if(this == o) return true;
+        if(o == null || getClass() != o.getClass()) return false;
+        Food food = (Food) o;
+        return Objects.equals(id, food.id);
+    }
+
+    @Override
+    public int hashCode(){
+        return Objects.hash(id);
+    }
 }
