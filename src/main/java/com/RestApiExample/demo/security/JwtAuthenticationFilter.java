@@ -5,27 +5,33 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
-@Component
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private JwtUtil jwtUtil;
     private UserDetailsService userDetailsService;
 
     @Autowired
-    public JwtAuthenticationFilter(JwtUtil jwtUtil, UserDetailsService userDetailsService){
+    public JwtAuthenticationFilter(JwtUtil jwtUtil, UserDetailsService userDetailsService, AuthenticationManager authenticationManager){
         this.jwtUtil = jwtUtil;
         this.userDetailsService = userDetailsService;
+        this.setAuthenticationManager(authenticationManager);
     }
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
     throws ServletException, IOException {
+        String requestPath = request.getRequestURI();
+        if (requestPath.startsWith("/api/auth")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         String token = request.getHeader("Authorization");
         if(token != null && token.startsWith("Bearer ")){
             token = token.substring(7);
