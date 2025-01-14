@@ -35,12 +35,14 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody User user){
+    public ResponseEntity<String> login(@RequestBody User user) {
         User existingUser = userService.findByUsername(user.getUsername());
-        if(existingUser != null && passwordEncoder.matches(user.getPassword(),existingUser.getPassword())){
-            String token = jwtUtil.generateToken(existingUser.getUsername());
+        if (existingUser != null && passwordEncoder.matches(user.getPassword(), existingUser.getPassword())) {
+//            System.out.println("User role: " + existingUser.getRole());
+            String token = jwtUtil.generateToken(existingUser.getUsername(), existingUser.getRole());
             return ResponseEntity.ok(token);
         }
-        return new ResponseEntity<>("Invalid username or password",HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>("Invalid username or password", HttpStatus.NOT_FOUND);
     }
+
 }
